@@ -10,6 +10,7 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.udacity.gradle.builditbigger.jokes.Joke;
+import com.udacity.gradle.builditbigger.jokes.JokeFactory;
 
 import javax.inject.Named;
 
@@ -29,8 +30,7 @@ public class JokesEndpoint {
     @ApiMethod(name = "tellJoke")
     public JokeBean tellJoke() {
         JokeBean response = new JokeBean();
-        response.setData(new Joke().getJoke());
+        response.setData(JokeFactory.getInstance().getJoke().getText());
         return response;
     }
-
 }
