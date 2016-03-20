@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/javaJokes" />
             <option value="$PROJECT_DIR$/jokeIntentHandler" />
+            <option value="$PROJECT_DIR$/jokesBackend" />
           </set>
         </option>
         <option name="myModules">
@@ -19,6 +20,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/javaJokes" />
             <option value="$PROJECT_DIR$/jokeIntentHandler" />
+            <option value="$PROJECT_DIR$/jokesBackend" />
           </set>
         </option>
       </GradleProjectSettings>
