@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,17 +16,21 @@ import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 import com.udacity.gradle.builditbigger.jokeintenthandler.HandleJokeActivity;
-import com.udacity.gradle.builditbigger.jokes.Joke;
 
 import java.io.IOException;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private JokeEndpointAsyncTask jokeEndpointAsyncTask;
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        jokeEndpointAsyncTask = new JokeEndpointAsyncTask(this);
     }
 
 
@@ -54,14 +57,26 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view) {
-        new EndpointsAsyncTask(this).execute();
+        if (jokeEndpointAsyncTask == null) {
+            Log.e(TAG, "jokeEndpointAsyncTask should not be null");
+            return;
+        }
+
+        //if there is a joke endpoint async task request currently in progress, don't fire another one
+        if (jokeEndpointAsyncTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
+            Log.e(TAG, "jokeEndpointAsyncTask already executing.");
+            return;
+        }
+
+        jokeEndpointAsyncTask = new JokeEndpointAsyncTask(this);
+        jokeEndpointAsyncTask.execute();
     }
 
-    private class EndpointsAsyncTask extends AsyncTask<Object, Void, String> {
+    private class JokeEndpointAsyncTask extends AsyncTask<Object, Void, String> {
         private MyApi myApiService = null;
         private Context context;
 
-        public EndpointsAsyncTask(Context context) {
+        protected JokeEndpointAsyncTask(Context context) {
             if (context == null) {
                 Log.e(MainActivity.class.getSimpleName(), "null context passed in");
             }
@@ -92,12 +107,14 @@ public class MainActivity extends ActionBarActivity {
             try {
                 return myApiService.tellJoke().execute().getData();
             } catch (IOException e) {
+                Log.e(TAG, "error executing the joke endpoint to get data");
                 return e.getMessage();
             }
         }
 
         @Override
         protected void onPostExecute(String result) {
+            Log.d(TAG, "joke data retrieved: " + result);
             Intent intent = new Intent(context, HandleJokeActivity.class);
             intent.putExtra(HandleJokeActivity.JOKE_TEXT_EXTRA, result);
             startActivity(intent);
