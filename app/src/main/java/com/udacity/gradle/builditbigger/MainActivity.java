@@ -12,8 +12,6 @@ import android.view.View;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 import com.udacity.gradle.builditbigger.jokeintenthandler.HandleJokeActivity;
 
@@ -22,8 +20,9 @@ import java.io.IOException;
 
 public class MainActivity extends ActionBarActivity {
 
-    private JokeEndpointAsyncTask jokeEndpointAsyncTask;
     private static final String TAG = MainActivity.class.getSimpleName();
+    private JokeEndpointAsyncTask jokeEndpointAsyncTask;
+    private String googleBackendAppId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +30,8 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         jokeEndpointAsyncTask = new JokeEndpointAsyncTask(this);
+
+        googleBackendAppId = this.getString(R.string.google_app_id);
     }
 
 
@@ -86,21 +87,8 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(Object... params) {
             if(myApiService == null) {  // Only do this once
-                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                        new AndroidJsonFactory(), null)
-                        .setApplicationName(getString(R.string.app_name))
-                        // options for running against local devappserver
-                        // - 10.0.3.2 is localhost's IP address in Genymotion
-                        // - turn off compression when running against local devappserver
-                        .setRootUrl("http://10.0.3.2:8080/_ah/api/")
-                        .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                            @Override
-                            public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-                                abstractGoogleClientRequest.setDisableGZipContent(true);
-                            }
-                        });
-                // end options for devappserver
-
+                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+                        .setRootUrl("https://" + googleBackendAppId + ".appspot.com/_ah/api/");
                 myApiService = builder.build();
             }
 
