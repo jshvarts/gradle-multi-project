@@ -3,6 +3,8 @@ package com.udacity.gradle.builditbigger.jokeintenthandler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class HandleJokeActivity extends AppCompatActivity {
@@ -20,7 +22,12 @@ public class HandleJokeActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, jokeText, Toast.LENGTH_SHORT).show();
-    }
+        TextView jokeTextView = (TextView) findViewById(R.id.joke_text);
+        if (jokeTextView == null) {
+            Log.e(getClass().getSimpleName(), "Joke text view is null");
+            return;
+        }
 
+        jokeTextView.setText(jokeText);
+    }
 }

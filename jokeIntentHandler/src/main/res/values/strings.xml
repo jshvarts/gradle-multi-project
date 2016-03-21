@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">JokeIntentHandler</string>
+    <string name="joke_label_text">"Joke: "</string>
 </resources>
