@@ -45,12 +45,6 @@ public class MainActivityInstrumentationTest {
     }
 
     @Test
-    public void verifyAdViewDisplayed() {
-        onView(withId(R.id.adView))
-                .check(matches(isDisplayed()));
-    }
-
-    @Test
     public void verifyJokeButtonReady() {
         onView(withContentDescription(R.string.button_text))
                 .check(matches(isDisplayed()))
